@@ -9,7 +9,7 @@ import pandas as pd
 
 
 if __name__ == '__main__':
-    df = read_data('QO/DEMOCRATIE_ET_CITOYENNETE.json')
+    df = read_data('data/DEMOCRATIE_ET_CITOYENNETE.json')
     df_responses = get_open_reponses(df)
 
     responses = (df_responses[df_responses.questionId == '107'].
