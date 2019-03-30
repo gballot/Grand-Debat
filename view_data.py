@@ -1,4 +1,4 @@
-# librairies imported
+#%% librairies imported
 import src.utils as ut
 import numpy as np
 import pandas as pd
@@ -74,4 +74,5 @@ for i in range(5):
     print(str(number_of_participant_to_several_surveys[i]) + " people have participed to "
           + str(i) + " different surveys.")
     
-#%%
+#%% 1. Tokenization
+
