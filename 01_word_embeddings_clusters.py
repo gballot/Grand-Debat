@@ -20,6 +20,7 @@ if __name__ == '__main__':
     features = [s.get_features(x) for x in responses]
 
     features_np = np.array(features)
+    print(features_np)
 
     samples_id = np.random.choice(range(len(features)), 5000)
 

@@ -2,6 +2,10 @@
 import src.utils as ut
 import numpy as np
 import pandas as pd
+import string
+from src.kmeans_embeddings import FeaturesExtractor
+from src.utils import (read_data, get_open_reponses)
+from sklearn.cluster import KMeans
 
 #%% extract data from json
 df_fiscalite = ut.read_data('data/LA_FISCALITE_ET_LES_DEPENSES_PUBLIQUES.json')
@@ -74,5 +78,68 @@ for i in range(5):
     print(str(number_of_participant_to_several_surveys[i]) + " people have participed to "
           + str(i) + " different surveys.")
     
-#%% 1. Tokenization
+#%% View Questions
+
+#print(df_organisation.columns)
+#print(df_organisation['responses'].iloc[0])
+reponse_democratie = df_democratie['responses'].iloc[0]
+for i in range(len(reponse_democratie)) :
+    print("****")
+    print(reponse_democratie[i]['questionId'])
+    print(reponse_democratie[i]['questionTitle'])
+
+reponse_ecologie = df_ecologie['responses'].iloc[0]
+for i in range(len(reponse_ecologie)) :
+    print("****")
+    print(reponse_ecologie[i]['questionId'])
+    print(reponse_ecologie[i]['questionTitle'])
+
+reponse_fiscalité = df_fiscalite['responses'].iloc[0]
+for i in range(len(reponse_fiscalité)) :
+    print("****")
+    print(reponse_fiscalité[i]['questionId'])
+    print(reponse_fiscalité[i]['questionTitle'])
+
+reponse_organisation = df_organisation['responses'].iloc[0]
+for i in range(len(reponse_organisation)) :
+    print("****")
+    print(reponse_organisation[i]['questionId'])
+    print(reponse_organisation[i]['questionTitle'])
+
+#%% 
+    
+df_responses = get_open_reponses(df_fiscalite)
+
+responses = (df_responses[df_responses.questionId == '162'].formattedValue.values.tolist())
+
+# Extract embeddings for sentences
+s = FeaturesExtractor()
+features = [s.get_features(x) for x in responses]
+
+features_np = np.array(features)
+print(features_np)
+
+samples_id = np.random.choice(range(len(features)), 5000)
+
+features_np_samples = features_np[samples_id, :]
+np.savetxt('features_s.tsv', features_np_samples, delimiter='\t')
+responses_samples = [responses[i] for i in samples_id]
+with open('labels_s.tsv', 'w') as f:
+    for resp in responses_samples:
+        v = resp.replace('\n', '. ')
+        v = v.replace('\t', '. ')
+        f.write('{}\n'.format(v))
+# Fit Kmeans
+k = KMeans(n_clusters=15)
+k.fit(np.array(features))
+
+# print samples from each clusters
+df = pd.DataFrame({'label': k.labels_, 'response': responses})
+
+for label in df.label.unique():
+    print('label {}'.format(label))
+    samples = [x for x in df[df.label == label].sample(10).response.tolist()]
+    for sample in samples:
+        print(sample)
+    print('#'*20)
 
