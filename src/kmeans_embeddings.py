@@ -36,7 +36,7 @@ class FeaturesExtractor:
         assert type(response) == str, 'response must be a string'
         words = tokenize(response)
 
-        words = [self.porter.stem(x.lower()) for x in words if x not in self.stop_words]
+        words = [self.porter.stem(x.lower()) for x in words if x not in self.stop_words and x.isalpha()]
 
         return self.model.get_sentence_vector(' '.join(words))
 
