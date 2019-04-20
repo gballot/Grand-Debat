@@ -4,6 +4,7 @@ import fastText
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from nltk.stem.porter import PorterStemmer
 import string
 import stop_words
 import pathlib
@@ -27,6 +28,7 @@ class FeaturesExtractor:
         print(('loading model could take a while...'
                ' and takes up to 7GO of RAM'))
         self.model = fastText.load_model(model_path)
+        self.porter = PorterStemmer()
 
     def get_features(self, response: str):
         """
@@ -34,7 +36,7 @@ class FeaturesExtractor:
         assert type(response) == str, 'response must be a string'
         words = tokenize(response)
 
-        words = [x for x in words if x not in self.stop_words]
+        words = [self.porter.stem(x.lower()) for x in words if x not in self.stop_words]
 
         return self.model.get_sentence_vector(' '.join(words))
 
