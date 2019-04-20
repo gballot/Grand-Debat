@@ -20,7 +20,6 @@ df_democratie = ut.read_data('data/DEMOCRATIE_ET_CITOYENNETE.json')
 df_ecologie = ut.read_data('data/LA_TRANSITION_ECOLOGIQUE.json')
 df_organisation = ut.read_data('data/ORGANISATION_DE_LETAT_ET_DES_SERVICES_PUBLICS.json')
 
-dfs = np.array([["fiscalite", df_fiscalite], ["democratie", df_democratie], ["ecologie", df_ecologie], ["organisation", df_organisation]])
 #%%
 
 questionId = '162'
@@ -29,22 +28,7 @@ df_responses = get_open_reponses(df_fiscalite)
 
 responses = (df_responses[df_responses.questionId == questionId].formattedValue.values.tolist())
 
-# Extract embeddings for sentences
-s = FeaturesExtractor()
-features = [s.get_features(x) for x in responses]
-
-features_np = np.array(features)
-
-#samples_id = np.random.choice(range(len(features)), 5000)
-
-features_np_samples = features_np[:,:]#samples_id, :]
-np.savetxt('features_s_fiscalite_'+questionId+'.tsv', features_np_samples, delimiter='\t')
-#responses_samples = [responses[i] for i in samples_id]
-with open('labels_s_fiscalite_'+questionId+'.tsv', 'w') as f:
-    for resp in responses:#_samples:
-        v = resp.replace('\n', '. ')
-        v = v.replace('\t', '. ')
-        f.write('{}\n'.format(v))
+features = np.loadtxt('features_s_fiscalite_'+questionId+'.tsv', delimiter='\t')
 # Fit GMM
 gmm = GaussianMixture(n_components=10)
 labels = gmm.fit_predict(np.array(features))
