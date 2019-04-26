@@ -29,7 +29,7 @@ df_resp_dem = get_open_reponses(df_democratie)
 df_resp_eco = get_open_reponses(df_ecologie)
 df_resp_org = get_open_reponses(df_organisation)
 
-dfs_responses = np.array([["responses fiscalite", df_resp_fils], ["responses democratie", df_resp_dem], ["responses ecologie", df_resp_ecologie], ["responses organisation", df_resp_org]])
+dfs_responses = np.array([["responses fiscalite", df_resp_fis], ["responses democratie", df_resp_dem], ["responses ecologie", df_resp_ecologie], ["responses organisation", df_resp_org]])
 #%%
 for i in range(4):
 
