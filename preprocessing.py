@@ -31,30 +31,6 @@ df_resp_org = get_open_reponses(df_organisation)
 
 dfs_responses = np.array([["responses fiscalite", df_resp_fis], ["responses democratie", df_resp_dem], ["responses ecologie", df_resp_eco], ["responses organisation", df_resp_org]])
 
-#%% Be careful, these cells take a lot of time to run !!!!!
-    
-# allAuthIds is the sets of all the authorIds
-allAuthIds = []
-for i in range(4):
-    allAuthIds.extend(set(dfs[i,1]['authorId'].values))
-allAuthIds = set(allAuthIds)
-
-# all_auth_id_array is the sorted array of all the authorIds
-all_auth_id_array = np.sort(np.array(list(allAuthIds)))
-
-# auth_answers_count[i,j] is 1 if all_auth_id_array[i] has answered survey dfs[j]
-auth_answers_count = np.zeros((len(allAuthIds), 4), dtype=int)
-for j in range(4):
-    for i in range(len(all_auth_id_array)):
-        auth = all_auth_id_array[i]
-        line = dfs[j,1].loc[dfs[j,1]['authorId'] == auth]
-        if(len(line) > 0):
-            auth_answers_count[i,j] = auth_answers_count[i,j] + 1
-
-            
-# This cell aims to save the auth_answers_count array in auth_answers_count.csv
-np.savetxt("auth_answers_count.csv", auth_answers_count, fmt='%1u', delimiter=",")
-
 #%% extract features
 for i in range(4):
 
