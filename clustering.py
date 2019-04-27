@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 import string
 from src.kmeans_embeddings import FeaturesExtractor
-from src.utils import (read_data, get_open_reponses)
+from src.utils import (read_data, get_open_reponses, get_ids_open_reponses)
 from sklearn.mixture import GaussianMixture
 
 #%% extract data from json
@@ -24,12 +24,17 @@ dfs = np.array([["fiscalite", df_fiscalite], ["democratie", df_democratie], ["ec
 #%%
 
 #%% responses of each themes
-df_resp_fis = 0#get_open_reponses(df_fiscalite)
-df_resp_dem = 0#get_open_reponses(df_democratie)
-df_resp_eco = 0#get_open_reponses(df_ecologie)
-df_resp_org = 0#get_open_reponses(df_organisation)
+df_resp_fis = get_open_reponses(df_fiscalite)
+df_ids_fis = get_ids_open_reponses(df_fiscalite)
+df_resp_dem = get_open_reponses(df_democratie)
+df_ids_dem = get_ids_open_reponses(df_democratie)
+df_resp_eco = get_open_reponses(df_ecologie)
+df_ids_eco = get_ids_open_reponses(df_ecologie)
+df_resp_org = get_open_reponses(df_organisation)
+df_ids_org = get_ids_open_reponses(df_organisation)
 
 dfs_responses = np.array([["responses fiscalite", df_resp_fis], ["responses democratie", df_resp_dem], ["responses ecologie", df_resp_eco], ["responses organisation", df_resp_org]])
+dfs_ids = np.array([df_ids_fis, df_ids_dem, df_ids_eco, df_ids_org])
 #%% features and gmm for all themes
 
 features_tab = []
@@ -67,5 +72,19 @@ all_auth_id_array = np.sort(np.array(list(allAuthIds)))
 four_surveys_taken_auth_ids = [all_auth_id_array[i] for i in range(len(all_auth_id_array)) if number_of_survey_taken[i] == 4]
 
 print(four_surveys_taken_auth_ids)
+
+#%% get 2nd clustering features
+
+X = []
+
+for auth in four_surveys_taken_auth_ids:
+    features = []
+    for i in range(4) :
+        k = list(dfs_ids[i]).index(auth)
+        features = np.concatenate((features,np.array(gmms[i].predict_proba(features_tab[i][k])).ravel()), axis=1)
+    X.append(features)
+
+print(X)
+
 
 
