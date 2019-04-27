@@ -31,6 +31,8 @@ df_resp_org = get_open_reponses(df_organisation)
 
 dfs_responses = np.array([["responses fiscalite", df_resp_fis], ["responses democratie", df_resp_dem], ["responses ecologie", df_resp_eco], ["responses organisation", df_resp_org]])
 #%%
+
+#%% extract features
 s = FeaturesExtractor()
 for i in range(4):
 
