@@ -29,14 +29,14 @@ df_resp_dem = get_open_reponses(df_democratie)
 df_resp_eco = get_open_reponses(df_ecologie)
 df_resp_org = get_open_reponses(df_organisation)
 
-dfs_responses = np.array([["responses fiscalite", df_resp_fis], ["responses democratie", df_resp_dem], ["responses ecologie", df_resp_ecologie], ["responses organisation", df_resp_org]])
+dfs_responses = np.array([["responses fiscalite", df_resp_fis], ["responses democratie", df_resp_dem], ["responses ecologie", df_resp_eco], ["responses organisation", df_resp_org]])
 #%%
+s = FeaturesExtractor()
 for i in range(4):
 
-    responses = (df_responses[i,1][:].formattedValue.values.tolist())
+    responses = (dfs_responses[i,1][:].formattedValue.values.tolist())
 
     # Extract embeddings for sentences
-    s = FeaturesExtractor()
     features = [s.get_features(x) for x in responses]
 
     features_np = np.array(features)
@@ -51,16 +51,3 @@ for i in range(4):
             v = resp.replace('\n', '. ')
             v = v.replace('\t', '. ')
             f.write('{}\n'.format(v))
-    # Fit GMM
-    gmm = GaussianMixture(n_components=10)
-    labels = gmm.fit_predict(np.array(features))
-
-    # print samples from each clusters
-    df = pd.DataFrame({'label': labels, 'response': responses})
-
-    for label in df.label.unique():
-        print('label {}'.format(label))
-        samples = [x for x in df[df.label == label].sample(10).response.tolist()]
-        for sample in samples:
-             print(sample)
-             print('#'*20)
