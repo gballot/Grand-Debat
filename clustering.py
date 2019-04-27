@@ -84,7 +84,7 @@ for auth in four_surveys_taken_auth_ids:
         features = np.concatenate((features,np.array(gmms[i].predict_proba(features_tab[i][k])).ravel()), axis=1)
     X.append(features)
 
-print(X)
+X = np.array(X)
 
-
+np.savetxt("X.csv", X, delimiter=",")
 
