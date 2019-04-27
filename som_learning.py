@@ -27,7 +27,7 @@ def open_som():
     with open('som.p', 'rb') as infile:
         return(pickle.load(infile))
 
-def som_training(xsize, ysize, nb_features, sigma, learning_rate, X_train, num_iteration):
+def som_training(xsize, ysize, nb_features, sigma, learning_rate, X_train, num_iteration, show_bool):
     # Initialization and training
     som = MiniSom(xsize, ysize, nb_features, sigma=sigma, learning_rate=learning_rate, neighborhood_function='gaussian')
 
@@ -50,12 +50,13 @@ def som_training(xsize, ysize, nb_features, sigma, learning_rate, X_train, num_i
         plt.plot(w[0]+.5, w[1]+.5, markers[y_train[cnt]], markerfacecolor='None', markeredgecolor=colors[y_train[cnt]], markersize=12, markeredgewidth=2)
     plt.axis([0, xsize, 0, ysize])
     plt.title("Map post-training")
-    plt.show()
+    if(show_bool):
+        plt.show()
     #saving som model trained in a file
     save_som(som)
 
 def activation_frequencies(map_size, X_train):
-    #open som
+    #open trained som
     som = open_som()
     plt.figure(figsize=(map_size+1, map_size))
     frequencies = np.zeros((map_size, map_size))
@@ -63,7 +64,24 @@ def activation_frequencies(map_size, X_train):
         frequencies[position[0], position[1]] = len(values)
     plt.pcolor(frequencies, cmap='Blues')
     plt.colorbar()
+    plt.title("Activation frequence for each neuron")
     plt.show()
 
-som_training(7, 7, 4, 2.5, 0.5, X_train, 6000)
-activation_frequencies(7, X_train)
+def show_cluster(X_train, y_train, map_size):
+    #open trained som
+    som = open_som()
+    labels_map = som.labels_map(X_train, y_train)
+    label_names = np.unique(y_train)
+
+    plt.figure(figsize=(map_size, map_size))
+    the_grid = GridSpec(map_size, map_size)
+    for position in labels_map.keys():
+        label_fracs = [labels_map[position][l] for l in label_names]
+        plt.subplot(the_grid[6-position[1], position[0]], aspect=1)
+        patches, texts = plt.pie(label_fracs)
+    plt.legend(patches, label_names, bbox_to_anchor=(0, 3), ncol=3)
+    plt.show()
+
+som_training(7, 7, 4, 2.5, 0.5, X_train, 6000, 0)
+#activation_frequencies(7, X_train)
+show_cluster(X_train, y_train, 7)
