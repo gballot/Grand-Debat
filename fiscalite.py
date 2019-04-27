@@ -13,6 +13,8 @@ import string
 from src.kmeans_embeddings import FeaturesExtractor
 from src.utils import (read_data, get_open_reponses)
 from sklearn.mixture import GaussianMixture
+from sklearn.model_selection import train_test_split
+
 
 #%% extract data from json
 df_fiscalite = ut.read_data('data/LA_FISCALITE_ET_LES_DEPENSES_PUBLIQUES.json')
@@ -45,7 +47,11 @@ with open('labels_s_fiscalite_all_questions.tsv', 'w') as f:
         f.write('{}\n'.format(v))
 # Fit GMM
 gmm = GaussianMixture(n_components=10)
-labels = gmm.fit_predict(np.array(features))
+gmm_test = GaussianMixture(n_components=10)
+X_train, X_test = train_test_split(np.array(features), test_size=0.33, random_state=1)
+labels_train = gmm.fit_predict(X_train)
+labels_test = gmm.predict(X_test)
+labels_test2 = gmm.fit_predict(X_test)
 
 # print samples from each clusters
 df = pd.DataFrame({'label': labels, 'response': responses})
