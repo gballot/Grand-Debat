@@ -1,5 +1,6 @@
-all:
+default:
 
+all: update_data import_tsv_from_omv get_fastText nltk
 
 update_data:
 	$(RM) data/LA_TRANSITION_ECOLOGIQUE.json data/LA_FISCALITE_ET_LES_DEPENSES_PUBLIQUES.json data/DEMOCRATIE_ET_CITOYENNETE.json data/ORGANISATION_DE_LETAT_ET_DES_SERVICES_PUBLICS.json
@@ -12,4 +13,11 @@ update_data:
 
 import_tsv_from_omv:
 	scp root@90.92.106.62:Grand-Debat/*.tsv .
+
+get_fastText:
+	cd; git clone https://github.com/facebookresearch/fastText.git; cd fastText; make; pip3 install .
+
+nltk:
+	pip3 install nltk
+	python3 -c "import nltk;nltk.download('stopwords');nltk.download('punkt')"
 
