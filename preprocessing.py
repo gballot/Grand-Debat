@@ -37,7 +37,7 @@ s = FeaturesExtractor()
 def extract_features():
     for k in range(4):
         ids_questions = get_ids_open_reponses(dfs[k,1])
-        ids_auth = list(set(dfs_responses[k,1]['authorId'].values))
+        ids_auth = np.sort(list(set(dfs_responses[k,1]['authorId'].values)))
         responses = (dfs_responses[k,1][:].formattedValue.values.tolist())
         # Extract embeddings for sentences
         features = np.zeros((len(ids_auth), 300*len(ids_questions)))
@@ -58,5 +58,5 @@ def extract_features():
 
 #%%
 
-#extract_features()
+extract_features()
 
