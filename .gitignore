@@ -109,3 +109,4 @@ data/*
 *.tsv
 *.ipynb
 *.p
+*.joblib
