@@ -117,7 +117,7 @@ def real_visualization(nb_models):
              titles=df.columns[:-1], shape=[4, 5], colormap=None)
     plt.show()
 
-#training_batched_som(3, 10, 10, X)
+training_batched_som(3, 10, 10, X)
 find_clusters(3, 10)
 prototype_visualization(10)
 #real_visualization(10)

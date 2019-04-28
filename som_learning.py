@@ -88,6 +88,6 @@ def show_cluster(X, y, map_size, show_bool):
         plt.show()
 
 som_training(4, 4, 4, 0.5, 0.5, X, y, 10000, 0)
-#activation_frequencies(7, X, 0)
+activation_frequencies(7, X, 0)
 show_cluster(X, y, 4, 1)
 
