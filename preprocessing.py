@@ -33,17 +33,17 @@ dfs_responses = np.array([["responses fiscalite", df_resp_fis], ["responses demo
 #%%
 
 #%% extract features
+s = FeaturesExtractor()
 def extract_features():
-    s = FeaturesExtractor()
     for k in range(4):
 
-        ids_questions = get_ids_open_reponses(dfs_responses[k,1])
+        ids_questions = get_ids_open_reponses(dfs[k,1])
         ids_auth = set(dfs_responses[k,1]['authorId'].values)
 
         responses = (dfs_responses[k,1][:].formattedValue.values.tolist())
 
         # Extract embeddings for sentences
-        features = np.zeros(len(ids_auth), 300*len(ids_questions))
+        features = np.zeros((len(ids_auth), 300*len(ids_questions)))
         for i in range(len(ids_auth)) :
             for j in range(len(ids_questions)) :
                 features[i][300*j:300*(j+1)] = s.get_features(dfs_responses[k,1][dfs_responses[k,1]['authorId','questionId'] == ids_auth[i],ids_questions[j]])
@@ -57,3 +57,8 @@ def extract_features():
         #        v = resp.replace('\n', '. ')
         #        v = v.replace('\t', '. ')
         #        f.write('{}\n'.format(v))
+
+#%%
+
+#extract_features()
+
