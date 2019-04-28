@@ -79,12 +79,23 @@ X = []
 
 for auth in four_surveys_taken_auth_ids:
     features = []
-    for i in range(4) :
-        k = list(dfs_ids[i]).index(auth)
-        features = np.concatenate((features,np.array(gmms[i].predict_proba(features_tab[i][k])).ravel()), axis=1)
+    for i in range(2) :
+        k = dfs_responses[i,1][dfs_responses[i,1]['authorId']==auth].index[0]
+        #k = list(dfs_ids[i]).index(auth)
+        features = np.concatenate((features, np.array(gmms[i].predict_proba(features_tab[i][k].reshape(1, -1))).ravel()))
     X.append(features)
 
 X = np.array(X)
+
+np.savetxt("X.csv", X, delimiter=",")
+
+#%%
+
+X = np.array(gmms[0].predict_proba(features_tab[0]))
+for i in range(1,2) :
+    X = np.concatenate((X, np.array(gmms[i].predict_proba(features_tab[i]))), axis=1)
+
+print(X)
 
 np.savetxt("X.csv", X, delimiter=",")
 
