@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 import string
 from src.kmeans_embeddings import FeaturesExtractor
-from src.utils import (read_data, get_open_reponses)
+from src.utils import (read_data, get_open_reponses, get_ids_open_reponses)
 from sklearn.mixture import GaussianMixture
 
 #%% extract data from json
@@ -33,23 +33,27 @@ dfs_responses = np.array([["responses fiscalite", df_resp_fis], ["responses demo
 #%%
 
 #%% extract features
-s = FeaturesExtractor()
-for i in range(4):
+def extract_features():
+    s = FeaturesExtractor()
+    for k in range(4):
 
-    responses = (dfs_responses[i,1][:].formattedValue.values.tolist())
+        ids_questions = get_ids_open_reponses(dfs_responses[k,1])
+        ids_auth = set(dfs_responses[k,1]['authorId'].values)
 
-    # Extract embeddings for sentences
-    features = [s.get_features(x) for x in responses]
+        responses = (dfs_responses[k,1][:].formattedValue.values.tolist())
 
-    features_np = np.array(features)
+        # Extract embeddings for sentences
+        features = np.zeros(len(ids_auth), 300*len(ids_questions))
+        for i in range(len(ids_auth)) :
+            for j in range(len(ids_questions)) :
+                features[i][300*j:300*(j+1)] = s.get_features(dfs_responses[k,1][dfs_responses[k,1]['authorId','questionId'] == ids_auth[i],ids_questions[j]])
 
-    #samples_id = np.random.choice(range(len(features)), 5000)
 
-    features_np_samples = features_np[:,:]#samples_id, :]
-    np.savetxt(dfs_responses[i,0,]+'_all_questions.tsv', features_np_samples, delimiter='\t')
-    #responses_samples = [responses[i] for i in samples_id]
-    with open('labels_'+dfs_responses[i,0]+'_all_questions.tsv', 'w') as f:
-        for resp in responses:#_samples:
-            v = resp.replace('\n', '. ')
-            v = v.replace('\t', '. ')
-            f.write('{}\n'.format(v))
+
+        np.savetxt(dfs_responses[k,0,]+'_all_questions.tsv', features, delimiter='\t')
+        #responses_samples = [responses[i] for i in samples_id]
+        #with open('labels_'+dfs_responses[k,0]+'_all_questions.tsv', 'w') as f:
+        #    for resp in responses:#_samples:
+        #        v = resp.replace('\n', '. ')
+        #        v = v.replace('\t', '. ')
+        #        f.write('{}\n'.format(v))
