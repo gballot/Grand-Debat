@@ -107,6 +107,7 @@ venv.bak/
 *.DS_Store
 data/*
 *.tsv
+*.tsv.old
 *.ipynb
 *.p
 *.joblib
