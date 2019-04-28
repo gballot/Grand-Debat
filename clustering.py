@@ -10,7 +10,7 @@ import src.utils as ut
 import numpy as np
 import pandas as pd
 import string
-from src.kmeans_embeddings import FeaturesExtractor
+#from src.kmeans_embeddings import FeaturesExtractor
 from src.utils import (read_data, get_open_reponses, get_ids_open_reponses)
 from sklearn.mixture import GaussianMixture
 
@@ -43,11 +43,11 @@ gmms = []
 
 for i in range(4):
     # read features
-    features_tab[i] = np.loadtxt(dfs_responses[i,0,]+'_all_questions.tsv', delimiter='\t')
+    features_tab.append(np.loadtxt(dfs_responses[i,0]+'_all_questions.tsv', delimiter='\t'))
 
     # Fit GMM
-    gmms[i] = GaussianMixture(n_components=10)
-    labels = gmms[i].fit_predict(np.array(features_tab[i]))
+    gmms.append(GaussianMixture(n_components=10))
+    gmms[i].fit(np.array(features_tab[i]))
 
 
 #%% get answers to 4 themes
