@@ -8,6 +8,7 @@ from sklearn.externals import joblib
 import random
 import matplotlib
 from sompy.sompy import SOMFactory
+from sompy.visualization.bmuhits import BmuHitsView
 from sompy.visualization.plot_tools import plot_hex_map
 from sompy.visualization.hitmap import HitMapView
 from sompy.visualization.mapview import View2D
@@ -117,7 +118,15 @@ def real_visualization(nb_models):
              titles=df.columns[:-1], shape=[4, 5], colormap=None)
     plt.show()
 
-training_batched_som(3, 10, 10, X)
-find_clusters(3, 10)
-prototype_visualization(10)
-#real_visualization(10)
+def hit_map(nb_models):
+    sm = get_best_model(nb_models)
+    vhts  = BmuHitsView(12,12,"Hits Map",text_size=7)
+    vhts.show(sm, anotate=True, onlyzeros=False, labelsize=7, cmap="autumn", logaritmic=False)
+    plt.show()
+
+
+#training_batched_som(3, 10, 10, X)
+#find_clusters(3, 10)
+#prototype_visualization(10)
+real_visualization(10)
+#hit_map(10)
