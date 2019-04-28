@@ -4,6 +4,9 @@ from matplotlib.gridspec import GridSpec
 from src.minisom import MiniSom
 import pickle
 
+#Path to the savec unbatched SOM
+path = './data/unbatched_SOM_models/'
+
 #Datasets
 from sklearn import datasets
 iris = datasets.load_iris()
@@ -20,11 +23,11 @@ X_test = X[1::2]
 y_test = y[1::2]
 
 def save_som(som):
-    with open('data/SOM_models/som.p', 'wb') as outfile:
+    with open(path+'som.p', 'wb') as outfile:
         pickle.dump(som, outfile)
 
 def open_som():
-    with open('data/SOM_models/som.p', 'rb') as infile:
+    with open(path+'som.p', 'rb') as infile:
         return(pickle.load(infile))
 
 def som_training(xsize, ysize, nb_features, sigma, learning_rate, X_train, y_train, num_iteration, show_bool):
@@ -85,6 +88,6 @@ def show_cluster(X, y, map_size, show_bool):
         plt.show()
 
 som_training(4, 4, 4, 0.5, 0.5, X, y, 10000, 0)
-#activation_frequencies(7, X, 0)
+activation_frequencies(7, X, 0)
 show_cluster(X, y, 4, 1)
 

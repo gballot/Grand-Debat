@@ -14,6 +14,9 @@ from sompy.visualization.mapview import View2D
 import logging
 import pickle
 
+#Path to savec trained batched SOM
+path = './data/batched_SOM_models/'
+
 #Datasets
 from sklearn import datasets
 iris = datasets.load_iris()
@@ -30,26 +33,19 @@ X_test = X[1::2]
 y_test = y[1::2]
 names=['setosa', 'versicolor', 'virginica']
 
-def save_batched_som(som):
-    with open('data/batched_som.p', 'wb') as outfile:
-        pickle.dump(som, outfile)
-
-def open_batched_som():
-    with open('data/batched_som.p', 'rb') as infile:
-        return(pickle.load(infile))
 
 # Train nb_models of models of a som map with random size between map_min_size and map_max_size 
 # Save the trained models into data/SOM_models 
 # Plot the topographic and quantization error
 def training_batched_som(map_min_size, map_max_size, nb_models, X_train):
-    for i in range(10): 
-        sm = SOMFactory().build(X_train, mapsize=[random.choice(list(range(3, 10))), random.choice(list(range(3, 10)))], normalization = 'var', initialization='random', component_names=names, lattice="hexa") 
+    for i in range(nb_models): 
+        sm = SOMFactory().build(X_train, mapsize=[random.choice(list(range(map_min_size, map_max_size))), random.choice(list(range(map_min_size, map_max_size)))], normalization = 'var', initialization='random', component_names=names, lattice="hexa") 
         sm.train(n_job=1, verbose=False, train_rough_len=30, train_finetune_len=100) 
-        joblib.dump(sm, "batched_model_{}.joblib".format(i))
+        joblib.dump(sm, path+"batched_model_{}.joblib".format(i))
         print("end of training model n°" + str(i))
 
     # Study the models trained and plot the errors obtained in order to select the best one
-    models_pool = glob.glob("./data/SOM_models/model*")
+    models_pool = glob.glob(path+"batched_model*")
     errors=[]
     for model_filepath in models_pool:
         sm = joblib.load(model_filepath)
@@ -65,7 +61,7 @@ def training_batched_som(map_min_size, map_max_size, nb_models, X_train):
 
 # Return the best model (best topographic error then best quantization error) into the trained models data/SOM_models
 def find_best_model(nb_models):
-    models_pool = glob.glob("./data/SOM_models/model*")
+    models_pool = glob.glob(path+"batched_model*")
     sm = joblib.load(models_pool[0])
     min_topo = sm.calculate_topographic_error()
     min_quanti = sm.calculate_quantization_error()
@@ -93,7 +89,7 @@ def find_best_model(nb_models):
     return(best_model)
 
 def get_best_model(nb_models):
-    models_pool = glob.glob("./data/SOM_models/model*")
+    models_pool = glob.glob(path+"batched_model*")
     return(joblib.load(models_pool[find_best_model(nb_models)]))
 
 def find_clusters(nb_clusters, nb_models):
@@ -121,7 +117,7 @@ def real_visualization(nb_models):
              titles=df.columns[:-1], shape=[4, 5], colormap=None)
     plt.show()
 
-
-#find_clusters(5, 10)
-#prototype_visualization(10)
-real_visualization(10)
+training_batched_som(3, 10, 10, X)
+find_clusters(3, 10)
+prototype_visualization(10)
+#real_visualization(10)
