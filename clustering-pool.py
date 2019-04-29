@@ -49,15 +49,15 @@ def features_from(i):
         df_fiscalite = ut.read_data('data/LA_FISCALITE_ET_LES_DEPENSES_PUBLIQUES.json')
         df_resp_fis = get_open_reponses(df_fiscalite)
         df_ids_fis = get_ids_open_reponses(df_fiscalite)
-    else if(i==1):
+    elif(i==1):
         df_democratie = ut.read_data('data/DEMOCRATIE_ET_CITOYENNETE.json')
         df_resp_dem = get_open_reponses(df_democratie)
         df_ids_dem = get_ids_open_reponses(df_democratie)
-    else if(i==2):
+    elif(i==2):
         df_ecologie = ut.read_data('data/LA_TRANSITION_ECOLOGIQUE.json')
         df_resp_eco = get_open_reponses(df_ecologie)
         df_ids_eco = get_ids_open_reponses(df_ecologie)
-    else if(i==3):
+    elif(i==3):
         df_organisation = ut.read_data('data/ORGANISATION_DE_LETAT_ET_DES_SERVICES_PUBLICS.json')
         df_resp_org = get_open_reponses(df_organisation)
         df_ids_org = get_ids_open_reponses(df_organisation)
