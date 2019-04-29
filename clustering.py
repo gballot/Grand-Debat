@@ -80,7 +80,7 @@ X = []
 for auth in four_surveys_taken_auth_ids:
     features = []
     for i in range(4) :
-        ids_auth = list(set(dfs_responses[k,1]['authorId'].values))
+        ids_auth = np.sort(list(set(dfs_responses[k,1]['authorId'].values)))
         k = ids_auth.index(auth)
         features = np.concatenate((features, np.array(gmms[i].predict_proba(features_tab[i][k].reshape(1, -1))).ravel()))
     X.append(features)

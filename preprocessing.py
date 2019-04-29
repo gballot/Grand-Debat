@@ -36,6 +36,7 @@ dfs_responses = np.array([["responses fiscalite", df_resp_fis], ["responses demo
 s = FeaturesExtractor()
 def extract_features():
     for k in range(4):
+        print("extract features : k = " + str(k))
         ids_questions = get_ids_open_reponses(dfs[k,1])
         ids_auth = np.sort(list(set(dfs_responses[k,1]['authorId'].values)))
         responses = (dfs_responses[k,1][:].formattedValue.values.tolist())
