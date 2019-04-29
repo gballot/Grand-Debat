@@ -18,16 +18,11 @@ dfs = np.array([["fiscalite", df_fiscalite], ["democratie", df_democratie], ["ec
 
 #%% responses of each themes
 df_resp_fis = get_open_reponses(df_fiscalite)
-df_ids_fis = get_ids_open_reponses(df_fiscalite)
 df_resp_dem = get_open_reponses(df_democratie)
-df_ids_dem = get_ids_open_reponses(df_democratie)
 df_resp_eco = get_open_reponses(df_ecologie)
-df_ids_eco = get_ids_open_reponses(df_ecologie)
 df_resp_org = get_open_reponses(df_organisation)
-df_ids_org = get_ids_open_reponses(df_organisation)
 
 dfs_responses = np.array([["responses fiscalite", df_resp_fis], ["responses democratie", df_resp_dem], ["responses ecologie", df_resp_eco], ["responses organisation", df_resp_org]])
-dfs_ids = np.array([df_ids_fis, df_ids_dem, df_ids_eco, df_ids_org])
 
 # allAuthIds is the sets of all the authorIds
 allAuthIds = []
