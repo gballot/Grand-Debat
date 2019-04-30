@@ -15,48 +15,38 @@ import multiprocessing
 from src.utils import (read_data, get_open_reponses, get_ids_open_reponses)
 from sklearn.mixture import GaussianMixture
 
-def initializer():
-    global gmm
-    global features
-    global df_organisation
-    global df_resp_org
-    global df_ids_org
-    global X
-    global ids_auth
-    global n_compo
-    n_compo = 10
-    four_surveys_taken_auth_ids = np.loadtxt("four_surveys_taken_auth_ids.csv", delimiter=",", dtype=str)
-    ids_auth = np.sort(list(set(df_resp_fis['authorId'].values)))
-    X = np.zeros((len(ids_auth), n_compo))
-    df_organisation = ut.read_data('data/ORGANISATION_DE_LETAT_ET_DES_SERVICES_PUBLICS.json')
-    df_resp_org = get_open_reponses(df_organisation)
-    df_ids_org = get_ids_open_reponses(df_organisation)
-    # read features
-    features = np.loadtxt('response organisation_all_questions.tsv', delimiter='\t')
-    # Fit GMM
-    gmm = GaussianMixture(n_components=n_compo)
-    gmm.fit(np.array(features))
-    # pool
-    local_pool = multiprocessing.Pool(20, initializer)
-    local_pool.map(fill_X, range(four_surveys_taken_auth_ids))
-    local_pool.close()
-    local_pool.join()
-    np.savetxt("X_organisation.csv", X, delimiter=",")
-
-
 def fill_X(auth_index):
-    local_features = []
-    k = ids_auth.index(auth)
-    local_features = gmm.predict_proba(features[k].reshape(1, -1).ravel())
-    X[auth_index] = local_features
-    print(X)
+    global gmm
+    global ids_auth
+    global features
+    global four_surveys_taken_auth_ids
+    auth = four_surveys_taken_auth_ids[auth_index]
+    k = list(ids_auth).index(auth)
+    return gmm.predict_proba(features[k].reshape(1, -1))[0]
 
 
-if __name__ == '__main__':
-    pool = multiprocessing.Pool(4)
-    pool.map(features_from, range(4))
-    pool.close()
-    pool.join()
+n_compo = 10
+df_organisation = ut.read_data('data/ORGANISATION_DE_LETAT_ET_DES_SERVICES_PUBLICS.json')
+df_resp_org = get_open_reponses(df_organisation)
+df_ids_org = get_ids_open_reponses(df_organisation)
+four_surveys_taken_auth_ids = np.loadtxt("four_surveys_taken_auth_ids.csv", delimiter=",", dtype=str)
+ids_auth = np.sort(list(set(df_resp_fis['authorId'].values)))
+np.savetxt("ids_auth_sorted.csv", ids_auth, delimiter=",", fmt="%s")
+X = np.zeros((len(four_surveys_taken_auth_ids), n_compo))
+# read features
+features = np.loadtxt('responses organisation_all_questions.tsv', delimiter='\t')
+# Fit GMM
+gmm = GaussianMixture(n_components=n_compo)
+gmm.fit(features)
+print(gmm.score(features[1000:2000]))
+# pool
+local_pool = multiprocessing.Pool(20)
+X = np.array(local_pool.map(fill_X, range(len(four_surveys_taken_auth_ids))))
+local_pool.close()
+local_pool.join()
+np.savetxt("X_organisation.csv", X, delimiter=",")
+
+
 
 
 
