@@ -38,9 +38,8 @@ features = np.loadtxt('responses fiscalite_all_questions.tsv', delimiter='\t')
 # Fit GMM
 gmm = GaussianMixture(n_components=n_compo)
 gmm.fit(features)
-print(gmm.score(features[1000:2000))
 # pool
-local_pool = multiprocessing.Pool(20)
+local_pool = multiprocessing.Pool(10)
 X = np.array(local_pool.map(fill_X, range(len(four_surveys_taken_auth_ids))))
 local_pool.close()
 local_pool.join()
