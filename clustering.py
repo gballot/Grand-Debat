@@ -37,17 +37,17 @@ dfs_responses = np.array([["responses fiscalite", df_resp_fis], ["responses demo
 dfs_ids = np.array([df_ids_fis, df_ids_dem, df_ids_eco, df_ids_org])
 #%% features and gmm for all themes
 
-features_tab = []
-gmms = []
+#features_tab = []
+#gmms = []
 
 
-for i in range(4):
+#for i in range(4):
     # read features
-    features_tab.append(np.loadtxt(dfs_responses[i,0]+'_all_questions.tsv', delimiter='\t'))
+#    features_tab.append(np.loadtxt(dfs_responses[i,0]+'_all_questions.tsv', delimiter='\t'))
 
     # Fit GMM
-    gmms.append(GaussianMixture(n_components=10))
-    gmms[i].fit(np.array(features_tab[i]))
+#    gmms.append(GaussianMixture(n_components=10))
+#    gmms[i].fit(np.array(features_tab[i]))
 
 
 #%% get answers to 4 themes
@@ -63,7 +63,7 @@ number_of_participants_by_survey = np.sum(auth_answers_count, axis=0)
 # allAuthIds is the sets of all the authorIds
 allAuthIds = []
 for i in range(4):
-    allAuthIds.extend(set(dfs[i,1]['authorId'].values))
+    allAuthIds.extend(set(dfs_responses[i,1]['authorId'].values))
 allAuthIds = set(allAuthIds)
 
 # all_auth_id_array is the sorted array of all the authorIds
@@ -72,21 +72,22 @@ all_auth_id_array = np.sort(np.array(list(allAuthIds)))
 four_surveys_taken_auth_ids = [all_auth_id_array[i] for i in range(len(all_auth_id_array)) if number_of_survey_taken[i] == 4]
 
 print(four_surveys_taken_auth_ids)
+np.savetxt("four_surveys_taken_auth_ids.csv", four_surveys_taken_auth_ids, delimiter=",")
 
 #%% get 2nd clustering features
 
-X = []
+#X = []
 
-for auth in four_surveys_taken_auth_ids:
-    features = []
-    for i in range(4) :
-        ids_auth = np.sort(list(set(dfs_responses[k,1]['authorId'].values)))
-        k = ids_auth.index(auth)
-        features = np.concatenate((features, np.array(gmms[i].predict_proba(features_tab[i][k].reshape(1, -1))).ravel()))
-    X.append(features)
-
-X = np.array(X)
-
-np.savetxt("X.csv", X, delimiter=",")
+#for auth in four_surveys_taken_auth_ids:
+#    features = []
+#    for i in range(4) :
+#        ids_auth = np.sort(list(set(dfs_responses[k,1]['authorId'].values)))
+#        k = ids_auth.index(auth)
+#        features = np.concatenate((features, np.array(gmms[i].predict_proba(features_tab[i][k].reshape(1, -1))).ravel()))
+#    X.append(features)
+#
+#X = np.array(X)
+#
+#np.savetxt("X.csv", X, delimiter=",")
 
 
