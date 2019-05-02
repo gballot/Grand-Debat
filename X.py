@@ -5,15 +5,14 @@ import pandas as pd
 X_ecologie = np.loadtxt("X_ecologie.csv", delimiter=",")
 X_democratie = np.loadtxt("X_democratie.csv", delimiter=",")
 X_fiscalite = np.loadtxt("X_fiscalite.csv", delimiter=",")
-#X_organisation = np.loadtxt("X_organisation.csv", delimiter=",")
+X_organisation = np.loadtxt("X_organisation.csv", delimiter=",")
 
-#X = np.concatenate((X_ecologie, X_democratie, X_fiscalite, X_organisation), axis=1)
-X = np.concatenate((X_ecologie, X_democratie, X_fiscalite), axis=1)
+X = np.concatenate((X_ecologie, X_democratie, X_fiscalite, X_organisation), axis=1)
 
 columns = ["ecologie_label"+str(i) for i in range(len(X_ecologie[0]))]
 columns = columns + ["democratie_label"+str(i) for i in range(len(X_democratie[0]))]
 columns = columns + ["fiscalite_label"+str(i) for i in range(len(X_fiscalite[0]))]
-#columns = columns + ["organisation_label"+str(i) for i in range(len(X_organisation[0]))]
+columns = columns + ["organisation_label"+str(i) for i in range(len(X_organisation[0]))]
 columns = [""] + columns
 columns = np.array(columns).reshape(1, -1)
 
