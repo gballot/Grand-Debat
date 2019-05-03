@@ -12,6 +12,7 @@ from sompy.visualization.bmuhits import BmuHitsView
 from sompy.visualization.plot_tools import plot_hex_map
 from sompy.visualization.hitmap import HitMapView
 from sompy.visualization.mapview import View2D
+from X import get_X, get_labels, get_full_X, get_auth_id
 import logging
 import pickle
 
@@ -19,20 +20,21 @@ import pickle
 path = './data/batched_SOM_models/'
 
 #Datasets
-from sklearn import datasets
-iris = datasets.load_iris()
-X = iris.data
-y = iris.target
+#from sklearn import datasets
+#iris = datasets.load_iris()
+#X = iris.data
+#y = iris.target
 
+X = get_X()
 # Data normalization
-X = np.apply_along_axis(lambda x: x/np.linalg.norm(x),1,X)
+#X = np.apply_along_axis(lambda x: x/np.linalg.norm(x),1,X)
 
 #Training and test set
-X_train = X[::2]
-y_train = y[::2]
-X_test = X[1::2]
-y_test = y[1::2]
-names=['setosa', 'versicolor', 'virginica']
+#X_train = X[::2]
+#y_train = y[::2]
+#X_test = X[1::2]
+#y_test = y[1::2]
+names=get_labels()
 
 
 # Train nb_models of models of a som map with random size between map_min_size and map_max_size 
@@ -94,24 +96,74 @@ def get_best_model(nb_models):
     return(joblib.load(models_pool[find_best_model(nb_models)]))
 
 def find_clusters(nb_clusters, nb_models):
-    sm = get_best_model(10)
-    sm.cluster(nb_clusters)
+    sm = get_best_model(nb_models)
+    print("som_map_clustered: ",sm.cluster(nb_clusters))
     hits  = HitMapView(12, 12,"Clustering",text_size=10, cmap=plt.cm.jet)
     a=hits.show(sm, anotate=True, onlyzeros=False, labelsize=7, cmap="Pastel1")
     plt.show()
 
+def get_clusters(nb_models, nb_clusters, X_projected):
+    sm = get_best_model(nb_models)
+    map_clustered = sm.cluster(nb_clusters)
+    projected_data = sm.project_data(X_projected)
+    clusters = []
+    cluster_0 = [];
+    cluster_1 = [];
+    cluster_2 = [];
+    cluster_3 = [];
+    cluster_4 = [];
+    cluster_5 = [];
+    cluster_6 = [];
+    cluster_7 = [];
+    cluster_8 = [];
+    cluster_9 = [];
+    auth_id = get_auth_id()
+    for i in range(projected_data.shape[0]):
+       clust = map_clustered[projected_data[i]]
+       if (clust == 0):
+           cluster_0.append(auth_id[i])
+       if (clust == 1):
+           cluster_1.append(auth_id[i])
+       if (clust == 2):
+           cluster_2.append(auth_id[i])
+       if (clust == 3):
+           cluster_3.append(auth_id[i])
+       if (clust == 4):
+           cluster_4.append(auth_id[i])
+       if (clust == 5):
+           cluster_5.append(auth_id[i])
+       if (clust == 6):
+           cluster_6.append(auth_id[i])
+       if (clust == 7):
+           cluster_7.append(auth_id[i])
+       if (clust == 8):
+           cluster_8.append(auth_id[i])
+       if (clust == 9):
+           cluster_9.append(auth_id[i])
+
+    clusters.append(cluster_0)   
+    clusters.append(cluster_1)   
+    clusters.append(cluster_2)   
+    clusters.append(cluster_3)   
+    clusters.append(cluster_4)   
+    clusters.append(cluster_5)   
+    clusters.append(cluster_6)   
+    clusters.append(cluster_7)   
+    clusters.append(cluster_8)   
+    clusters.append(cluster_9)
+    return(clusters)
+
 def prototype_visualization(nb_models):
-    sm = get_best_model(10)
+    sm = get_best_model(nb_models)
     view2D  = View2D(4,4,"", text_size=7)
     view2D.show(sm, col_sz=5, which_dim="all", denormalize=True)
     plt.show()
 
-def real_visualization(nb_models):
+def real_visualization(nb_models, X_train):
     sm = get_best_model(nb_models)
-    exogeneous_vars = [c for c in df.columns if not c in clustering_vars+["Cancelled", "bmus"]]
+    df = get_full_X()
     df["bmus"] = sm.project_data(X_train)
-    df = df[clustering_vars + exogeneous_vars + ["Cancelled"] + ["bmus"]]
-
+    df = np.append(df, sm.project_data(X_train), axis=1)
     empirical_codebook=df.groupby("bmus").mean().values
     matplotlib.rcParams.update({'font.size': 10})
     plot_hex_map(empirical_codebook.reshape(sm.codebook.mapsize + [empirical_codebook.shape[-1]]),
@@ -125,8 +177,11 @@ def hit_map(nb_models):
     plt.show()
 
 
-#training_batched_som(3, 10, 10, X)
-#find_clusters(3, 10)
-#prototype_visualization(10)
-real_visualization(10)
-#hit_map(10)
+nb_models = 1000
+
+#training_batched_som(map_min_size=10, map_max_size=50, nb_models=nb_models, X_train=X)
+#find_clusters(nb_clusters=10, nb_models=nb_models)
+#prototype_visualization(nb_models=nb_models)
+#real_visualization(nb_models=nb_models, X_train=X)
+#hit_map(nb_models=nb_models)
+get_clusters(nb_clusters=10, nb_models=10, X_projected=X)

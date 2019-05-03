@@ -157,7 +157,7 @@ def show_cluster(map_size, X, y, som_type, nb_models, show_bool):
     if(show_bool):
         plt.show()
 
-#som_solo_training(4, 4, 4, 0.5, 0.5, X, y, 10000, 0)
+som_solo_training(4, 4, 4, 0.5, 0.5, X, y, 10000, 0)
 #som_training(map_min_size=2, map_max_size=10, nb_features=4, sigma=0.5, learning_rate=0.5, X_train=X, num_iteration=10000)
 plot_som(nb_models=8, X_train=X, y_train=y) 
 activation_frequencies(map_size=9, X=X, som_type='best', nb_models=8, show_bool=0)
