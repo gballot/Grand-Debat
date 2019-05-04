@@ -70,6 +70,9 @@ def find_best_model(nb_models):
     min_quanti = sm.calculate_quantization_error()
     best_model = 0
     for i in range(1,nb_models-1):
+        if (i == 19 or i == 90):
+            continue;
+        print("Evaluation of model n°:"+str(i))
         selected_model = i
         sm = joblib.load(models_pool[selected_model])
         topographic_error = sm.calculate_topographic_error()
@@ -95,15 +98,22 @@ def get_best_model(nb_models):
     models_pool = glob.glob(path+"batched_model*")
     return(joblib.load(models_pool[find_best_model(nb_models)]))
 
-def find_clusters(nb_clusters, nb_models):
-    sm = get_best_model(nb_models)
+def open_model(model_nb):
+    models_pool = glob.glob(path+"batched_model*")
+    sm = joblib.load(models_pool[model_nb])
+    print("Topographic error of model n°"+str(model_nb)+": "+str(sm.calculate_topographic_error()))
+    print("Quantization error of model n°"+str(model_nb)+": "+str(sm.calculate_quantization_error()))
+    return(sm)
+    
+
+
+def plot_clusters(nb_clusters, nb_models, sm):
     print("som_map_clustered: ",sm.cluster(nb_clusters))
     hits  = HitMapView(12, 12,"Clustering",text_size=10, cmap=plt.cm.jet)
     a=hits.show(sm, anotate=True, onlyzeros=False, labelsize=7, cmap="Pastel1")
     plt.show()
 
-def get_clusters(nb_models, nb_clusters, X_projected):
-    sm = get_best_model(nb_models)
+def get_clusters(nb_models, nb_clusters, X_projected, sm):
     map_clustered = sm.cluster(nb_clusters)
     projected_data = sm.project_data(X_projected)
     clusters = []
@@ -153,14 +163,12 @@ def get_clusters(nb_models, nb_clusters, X_projected):
     clusters.append(cluster_9)
     return(clusters)
 
-def prototype_visualization(nb_models):
-    sm = get_best_model(nb_models)
+def prototype_visualization(nb_models, sm):
     view2D  = View2D(4,4,"", text_size=7)
     view2D.show(sm, col_sz=5, which_dim="all", denormalize=True)
     plt.show()
 
-def real_visualization(nb_models, X_train):
-    sm = get_best_model(nb_models)
+def real_visualization(nb_models, X_train, sm):
     df = get_full_X()
     df["bmus"] = sm.project_data(X_train)
     df = np.append(df, sm.project_data(X_train), axis=1)
@@ -170,18 +178,20 @@ def real_visualization(nb_models, X_train):
              titles=df.columns[:-1], shape=[4, 5], colormap=None)
     plt.show()
 
-def hit_map(nb_models):
-    sm = get_best_model(nb_models)
+def hit_map(nb_models, sm):
     vhts  = BmuHitsView(12,12,"Hits Map",text_size=7)
     vhts.show(sm, anotate=True, onlyzeros=False, labelsize=7, cmap="autumn", logaritmic=False)
     plt.show()
 
 
-nb_models = 1000
+nb_models = 440
 
 #training_batched_som(map_min_size=10, map_max_size=50, nb_models=nb_models, X_train=X)
-#find_clusters(nb_clusters=10, nb_models=nb_models)
-#prototype_visualization(nb_models=nb_models)
-#real_visualization(nb_models=nb_models, X_train=X)
-#hit_map(nb_models=nb_models)
-get_clusters(nb_clusters=10, nb_models=10, X_projected=X)
+#som = get_best_model(nb_models=nb_models)
+som = open_model(60)
+plot_clusters(nb_clusters=10, nb_models=nb_models, sm=som)
+#prototype_visualization(nb_models=nb_models, sm=som)
+#real_visualization(nb_models=nb_models, X_train=X, sm=som)
+#hit_map(nb_models=nb_models, sm=som)
+#get_clusters(nb_clusters=10, nb_models=10, X_projected=X, sm=som)
+
