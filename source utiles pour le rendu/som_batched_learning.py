@@ -19,21 +19,10 @@ import pickle
 #Path to savec trained batched SOM
 path = './data/batched_SOM_models/'
 
-#Datasets
-#from sklearn import datasets
-#iris = datasets.load_iris()
-#X = iris.data
-#y = iris.target
-
+#Getting the data from the first stage learning
 X = get_X()
-# Data normalization
-#X = np.apply_along_axis(lambda x: x/np.linalg.norm(x),1,X)
 
-#Training and test set
-#X_train = X[::2]
-#y_train = y[::2]
-#X_test = X[1::2]
-#y_test = y[1::2]
+#Labels of the first stage output data
 names=get_labels()
 
 
@@ -64,22 +53,13 @@ def training_batched_som(map_min_size, map_max_size, nb_models, X_train):
     plt.show()
 
 #Train a specific size of SOM with different parameters (not used)
-def training_specific_som(map_x_size, map_y_size, X_train):
-    neighborhood = ['gaussian', 'bubble']
-    initialization = ['pca', 'random']
-    lattice = ['hexa', 'rect']
-    selected_model = 0
-    for i in range(2):
-        for j in range(2):
-            for k in range(2):
-                sm = SOMFactory().build(X_train, mapsize=[map_x_size, map_y_size], normalization = 'var', initialization=initialization[j], component_names=names, lattice=lattice[k], neighborhood=neighborhood[i]) 
-                sm.train(n_job=1, verbose=False, train_rough_len=30, train_finetune_len=100)
+def training_specific_som(map_x_size, map_y_size, X_train): 
+    sm = SOMFactory().build(X_train, mapsize=[map_x_size, map_y_size], normalization = 'var', initialization='random', component_names=names, lattice='hexa') 
+    sm.train(n_job=1, verbose=False, train_rough_len=30, train_finetune_len=100)
+    joblib.dump(sm, path+"batched_model_specific{}.joblib".format(0))                
+    print("Topographic error: "+str(sm.calculate_topographic_error())+", Quantization error: "+str(sm.calculate_quantization_error())+"\n")
+    return(sm)
 
-                joblib.dump(sm, path+"batched_model_specific{}.joblib".format(selected_model))
-                print("End of training n°"+str(selected_model)+", neighborhood = "+str(neighborhood[i])+", initialization = "+str(initialization[j])+", lattice = "+str(lattice[k]))
-                print("Topographic error: "+str(sm.calculate_topographic_error())+", Quantization error: "+str(sm.calculate_quantization_error())+"\n")
-                selected_model+=1
-       
 
 # Return the number of best model (best topographic error then best quantization error) into the trained models data/batched_SOM_models
 def find_best_model(nb_models):
@@ -188,11 +168,10 @@ def prototype_visualization(sm):
     view2D.show(sm, col_sz=5, which_dim="all", denormalize=True)
     plt.show()
 
-#Plot the real visualization of a SOM (not finished)
+#Plot the real visualization of a SOM (bugged, don't use it)
 def real_visualization( X_train, sm):
     df = get_full_X()
-    df["bmus"] = sm.project_data(X_train)
-    df = np.append(df, sm.project_data(X_train), axis=1)
+    df["bmus"] = sm.project_data(X_train)   
     empirical_codebook=df.groupby("bmus").mean().values
     matplotlib.rcParams.update({'font.size': 10})
     plot_hex_map(empirical_codebook.reshape(sm.codebook.mapsize + [empirical_codebook.shape[-1]]),
@@ -200,8 +179,7 @@ def real_visualization( X_train, sm):
     plt.show()
 
 #Plot the hit-map of a SOM
-def hit_map(nb_models, sm):
+def hit_map(sm):
     vhts  = BmuHitsView(12,12,"Hits Map",text_size=7)
     vhts.show(sm, anotate=True, onlyzeros=False, labelsize=7, cmap="autumn", logaritmic=False)
     plt.show()
-
