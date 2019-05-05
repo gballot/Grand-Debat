@@ -100,20 +100,20 @@ def get_best_model(nb_models):
 
 def open_model(model_nb):
     models_pool = glob.glob(path+"batched_model*")
-    sm = joblib.load(models_pool[model_nb])
+    sm = joblib.load(models_pool[0])
     print("Topographic error of model n°"+str(model_nb)+": "+str(sm.calculate_topographic_error()))
     print("Quantization error of model n°"+str(model_nb)+": "+str(sm.calculate_quantization_error()))
     return(sm)
     
 
 
-def plot_clusters(nb_clusters, nb_models, sm):
+def plot_clusters(nb_clusters, sm):
     print("som_map_clustered: ",sm.cluster(nb_clusters))
     hits  = HitMapView(12, 12,"Clustering",text_size=10, cmap=plt.cm.jet)
     a=hits.show(sm, anotate=True, onlyzeros=False, labelsize=7, cmap="Pastel1")
     plt.show()
 
-def get_clusters(nb_models, nb_clusters, X_projected, sm):
+def get_clusters(nb_clusters, X_projected, sm):
     map_clustered = sm.cluster(nb_clusters)
     projected_data = sm.project_data(X_projected)
     clusters = []
@@ -184,14 +184,14 @@ def hit_map(nb_models, sm):
     plt.show()
 
 
-nb_models = 440
+nb_models = 100
 
 #training_batched_som(map_min_size=10, map_max_size=50, nb_models=nb_models, X_train=X)
 #som = get_best_model(nb_models=nb_models)
-som = open_model(60)
-plot_clusters(nb_clusters=10, nb_models=nb_models, sm=som)
+#som = open_model(60)
+#plot_clusters(nb_clusters=10, sm=som)
 #prototype_visualization(nb_models=nb_models, sm=som)
 #real_visualization(nb_models=nb_models, X_train=X, sm=som)
 #hit_map(nb_models=nb_models, sm=som)
-#get_clusters(nb_clusters=10, nb_models=10, X_projected=X, sm=som)
+#get_clusters(nb_clusters=10, X_projected=X, sm=som)
 
