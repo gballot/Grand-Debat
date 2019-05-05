@@ -19,10 +19,21 @@ import pickle
 #Path to savec trained batched SOM
 path = './data/batched_SOM_models/'
 
-#Getting the data from the first stage learning
-X = get_X()
+#Datasets
+#from sklearn import datasets
+#iris = datasets.load_iris()
+#X = iris.data
+#y = iris.target
 
-#Labels of the first stage output data
+X = get_X()
+# Data normalization
+#X = np.apply_along_axis(lambda x: x/np.linalg.norm(x),1,X)
+
+#Training and test set
+#X_train = X[::2]
+#y_train = y[::2]
+#X_test = X[1::2]
+#y_test = y[1::2]
 names=get_labels()
 
 
@@ -181,8 +192,6 @@ def prototype_visualization(sm):
 def real_visualization( X_train, sm):
     df = get_full_X()
     df["bmus"] = sm.project_data(X_train)
-    print("df shape: "+str(df.shape))
-    print("df shape: "+str(sm.project_data(X_train)))
     df = np.append(df, sm.project_data(X_train), axis=1)
     empirical_codebook=df.groupby("bmus").mean().values
     matplotlib.rcParams.update({'font.size': 10})
@@ -191,10 +200,8 @@ def real_visualization( X_train, sm):
     plt.show()
 
 #Plot the hit-map of a SOM
-def hit_map(sm):
+def hit_map(nb_models, sm):
     vhts  = BmuHitsView(12,12,"Hits Map",text_size=7)
     vhts.show(sm, anotate=True, onlyzeros=False, labelsize=7, cmap="autumn", logaritmic=False)
     plt.show()
 
-som = open_model(0)
-real_visualization(X, som)

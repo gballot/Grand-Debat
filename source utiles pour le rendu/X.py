@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 
-#Return the output data of the first stage learning, without labels
 def get_X():
     X_ecologie = np.loadtxt("X_ecologie.csv", delimiter=",")
     X_democratie = np.loadtxt("X_democratie.csv", delimiter=",")
@@ -11,7 +10,6 @@ def get_X():
     return(X)
 
 
-#Return the output data of the first stage learning with labels
 def get_full_X():
     X_ecologie = np.loadtxt("X_ecologie.csv", delimiter=",")
     X_democratie = np.loadtxt("X_democratie.csv", delimiter=",")
@@ -35,7 +33,6 @@ def get_full_X():
     X = pd.DataFrame(data=X[1:,1:], index=X[1:,0], columns=X[0,1:])
     return(X)
 
-#Return the labels of X
 def get_labels():
     X_ecologie = np.loadtxt("X_ecologie.csv", delimiter=",")
     X_democratie = np.loadtxt("X_democratie.csv", delimiter=",")
@@ -50,7 +47,6 @@ def get_labels():
     #columns = np.array(columns).reshape(1, -1)
     return(columns)
 
-#Return the ids of the author who aswered the 4 themes
 def get_auth_id():
     return(np.loadtxt("four_surveys_taken_auth_ids.csv", delimiter=",", dtype=str))   
 
